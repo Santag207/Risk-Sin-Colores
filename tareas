@@ -1,0 +1,27 @@
+TADS
+carta: santiago
+jugador: isa
+territorio: lina
+continente: santiago
+partidarisk: dani
+---------------------
+
+MAIN
+cargarCartas();//dani
+archivo de texto y leerlo;
+------------------------------
+
+inicializarTablero();//dani y lina
+archivo para crear lista de territorios y lista de continentes;
+-------------------------------------------------------------------
+
+cargarGrafoRebuscado();//lina y dani
+archivo para cargar conexiones entre paises;
+
+inicializarJugadores();// isa y dani
+preguntar todo sobre los jugadores;
+asignarUnidades();//lina
+asignar unidades a cada jugador
+-------------------------------------------------
+
+g++ -std=c++11 -o testr Jugador.cxx Carta.cxx Pais.cxx Continente.cxx Partida.cxx Main.cpp

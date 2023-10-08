@@ -2,7 +2,6 @@
 #define RISKSINCOLOR_ARBOLHUFF_H
 
 #include "NodoHUFF.h"
-#include "Simbolo.h"
 #include <vector>
 
 class ArbolHUFF{
@@ -11,7 +10,7 @@ private:
 public:
     //constructores
     ArbolHUFF();
-    ArbolHUFF(Simbolo& raiz);
+    ArbolHUFF(std::pair<int8_t, int64_t>& raiz);
     //desstructores
     ~ArbolHUFF();
     //getters
@@ -19,9 +18,9 @@ public:
     //setters
     void setRaiz(NodoHUFF * raiz);
     //operaciones
-    void insertar(std::vector<Simbolo> simbolos);
-    void codificar(std::vector<Simbolo> simbolos, std::vector<int> codigo);
-    void decodificar(std::vector<int> codigo, std::vector<Simbolo> simbolos);
+    void insertar(std::vector<std::pair<int8_t, int64_t>> simbolos);
+    void codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int8_t> codigo);
+    void decodificar(std::vector<int8_t> codigo, std::vector<std::pair<int8_t, int64_t>> simbolos);
 
 };
 

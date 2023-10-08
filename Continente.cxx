@@ -1,21 +1,31 @@
 #include "Continente.h"
 #include <string>
 
+//constructores
+//--------------------------------------------------------------------
 Continente::Continente(std::string nombre){
     this->nombre = nombre;
 }
 
+//getters
+//--------------------------------------------------------------------
 std::string Continente::get_nombre(){
     return nombre;
 }
 std::list<Pais> Continente::get_paises(){
     return paises;
 }
-void Continente::aggPais(Pais p){
-    this->paises.push_back(p);
-}
+
+//setters
+//--------------------------------------------------------------------
 void Continente::setNombre(std::string nombre){
     this->nombre = nombre;
+}
+
+//operaciones
+//--------------------------------------------------------------------
+void Continente::aggPais(Pais p){
+    this->paises.push_back(p);
 }
 
 void Continente::aggConexion(int pais, int vecino){
@@ -26,6 +36,7 @@ void Continente::aggConexion(int pais, int vecino){
         }
     }
 }
+
 bool Continente::lleno(){
     std::list<Pais>::iterator it = paises.begin();
     bool lleno = true;
@@ -139,4 +150,15 @@ bool Continente::fortificar(int idP, int idJ, int unidades){
         }
     }
     return fortificado;
+}
+
+int Continente::jugadorPosee(int idJ){
+    int p = 0;
+    std::list<Pais>::iterator it = paises.begin();
+    for(it = paises.begin() ; it != paises.end() ; it++){
+        if(it->get_id_jugador() == idJ){
+            p++;
+        }
+    }
+    return p;
 }

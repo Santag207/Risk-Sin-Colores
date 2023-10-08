@@ -1,5 +1,4 @@
 #include "Persistencia.h"
-#include "Simbolo.h"
 #include "ArbolHUFF.h"
 #include "Partida.h"
 #include "Carta.h"
@@ -19,10 +18,10 @@ Persistencia::Persistencia(){
 
 //getters
 // --------------------------------------------------------------------
-std::vector<Simbolo> Persistencia::getSimbolos(){
+std::vector<std::pair<int8_t, int64_t>> Persistencia::getSimbolos(){
     return this->simbolos;
 }
-std::vector<int> Persistencia::getCodigo(){
+std::vector<int64_t> Persistencia::getCodigo(){
     return this->codigo;
 }
 std::string Persistencia::getInfo(){
@@ -34,13 +33,13 @@ ArbolHUFF Persistencia::getArbol(){
 
 //setters
 // --------------------------------------------------------------------
-void Persistencia::aggSimbolo(Simbolo simboloNuevo){
+void Persistencia::aggSimbolo(std::pair<int8_t, int64_t> simboloNuevo){
     (this->simbolos).push_back(simboloNuevo);
 }
 void Persistencia::setSimbolos(std::string info){
 
 }
-void Persistencia::aggCodigo(int codigoNuevo){
+void Persistencia::aggCodigo(int64_t codigoNuevo){
     (this->codigo).push_back(codigoNuevo);
 }
 void Persistencia::aggInfo(std::string caracterNuevo){

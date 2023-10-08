@@ -6,7 +6,7 @@ NodoHUFF::NodoHUFF(){
     this->hijoI = nullptr;
     this->hijoD = nullptr;
 }
-NodoHUFF::NodoHUFF(Simbolo simbolo){
+NodoHUFF::NodoHUFF(std::pair<int8_t, int64_t> simbolo){
     this->simbolo = simbolo;
     this->hijoI = nullptr;
     this->hijoD = nullptr;
@@ -27,7 +27,7 @@ NodoHUFF::~NodoHUFF(){
 
 //getters
 //--------------------------------------------------------------------
-Simbolo NodoHUFF::getSimbolo(){
+std::pair<int8_t, int64_t>  NodoHUFF::getSimbolo(){
     return this->simbolo;
 }
 NodoHUFF * NodoHUFF::getHijoI(){

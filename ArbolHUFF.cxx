@@ -1,12 +1,11 @@
 #include "ArbolHUFF.h"
-#include "Simbolo.h"
 
 //constructores
 // --------------------------------------------------------------------
 ArbolHUFF::ArbolHUFF(){
     this->raiz = nullptr;
 }
-ArbolHUFF::ArbolHUFF(Simbolo& raiz){
+ArbolHUFF::ArbolHUFF(std::pair<int8_t, int64_t>& raiz){
     NodoHUFF * nuevo = new NodoHUFF(raiz);
     this->raiz = nuevo;
 }
@@ -32,12 +31,12 @@ void ArbolHUFF::setRaiz(NodoHUFF * raiz){
 
 //operaciones
 // --------------------------------------------------------------------
-void ArbolHUFF::insertar(std::vector<Simbolo> simbolos){
+void ArbolHUFF::insertar(std::vector<std::pair<int8_t, int64_t>> simbolos){
 
 }
-void ArbolHUFF::codificar(std::vector<Simbolo> simbolos, std::vector<int> codigo){
+void ArbolHUFF::codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int8_t> codigo){
 
 }
-void ArbolHUFF::decodificar(std::vector<int> codigo, std::vector<Simbolo> simbolos){
+void ArbolHUFF::decodificar(std::vector<int8_t> codigo, std::vector<std::pair<int8_t, int64_t>> simbolos){
 
 }

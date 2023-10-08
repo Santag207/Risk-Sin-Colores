@@ -13,11 +13,15 @@ private:
     std::string nombre;
     std::list<Pais> paises;
 public:
+    //constructores
     Continente(std::string nombre);
+    //getters
     std::string get_nombre();
     std::list<Pais> get_paises();
-    void aggPais(Pais p);
+    //setters
     void setNombre(std::string nombre);
+    //operaciones
+    void aggPais(Pais p);
     void aggConexion(int pais, int vecino);
     bool lleno();
     void ocuparPais(int idJugador, int idPais, int unidades);
@@ -28,6 +32,7 @@ public:
     bool intercambioPorPaises(int idJ);
     bool moverUnidad(int idP, int unidades);
     bool fortificar(int idP, int idJ, int unidades);
+    int jugadorPosee(int idJ);
 };
 
 #endif //RISK_CONTINENTE_H

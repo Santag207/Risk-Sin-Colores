@@ -1,8 +1,6 @@
-//
-// Created by Estudiante on 13/08/2023.
-//
 #include <iostream>
 #include "mainFunctions.h"
+#include "Persistencia.h"
 #include "Carta.h"
 #include "Partida.h"
 using namespace std;
@@ -16,6 +14,7 @@ int main() {
     bool hayEspacio = false, inicializado = false, finalizado = false;
     int numTurno = 0, paisOrigen = 0, paisDestino = 0, intercambios = 0, numIntercambios = 1, unidadesGanadas = 4, ganador = 0, rta = 0;;
     Partida risk(0);
+    Persistencia persistencia;
 
     cout << "BIENVENIDO A RISK - GRUPO 2" << endl << endl << endl;
     inicio();
@@ -27,6 +26,7 @@ int main() {
         hayEspacio = tiene_espacio(comando, cd);
         finalizado = risk.finalizado(&ganador);
         if(finalizado){
+
             inicializado = false;
             ganadorR();
             cout << "JUEGO FINALIZADO, HA GANADO EL JUGADOR " <<ganador<< endl;
@@ -172,13 +172,35 @@ int main() {
 
             }
             else if (cd[0] == "guardar") {
-                cout << "Guardar en archivo de texto '" << cd[1] << "' :recibido"<< endl;
+                if(!inicializado){
+                    cout << "Juego no inicializado"<< endl;
+                }else{
+                    cout << "Guardar en archivo de texto '" << cd[1] << "' :recibido"<< endl;
+                    cout << "Comando correcto"<< endl;
+                    persistencia.escribirArchivoTxt(cd[1], risk);
+                }
             }
             else if (cd[0] == "guardar_comprimido") {
                 cout << "Guardar en archivo binario '" << cd[1] << "' :recibido"<< endl;
             }
             else if (cd[0] == "inicializar") {
-                cout << "Inicializar juego del archivo '" << cd[1] << "' :recibido"<< endl;
+                if(!inicializado){
+                    if(persistencia.leerArchivoTxt(cd[1])){
+                        cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
+                        risk.cargarCartas(archivo_cartas);
+                        risk.inicializarTablero();
+                        risk.llenarContinentes();
+                        risk.cargarConexiones(archivo_conexiones);
+                        persistencia.recuperarPartidaConTxt(cd[1],risk);
+                        risk.mostrarInicializacion();
+                        inicializado = true;
+                    }else{
+                        cout << "Archivo vacio o incompleto\n";
+                    }
+                }else{
+                    cout << "Juego en curso" << endl;
+                }
+
             }
             else if (cd[0] == "costo_conquista") {
                 cout << "Costo de la conquista " << cd[1] << " :recibido" << endl;

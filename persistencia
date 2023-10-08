@@ -1,0 +1,67 @@
+//formato
+//ID,nombre,color,unidades,numCartas,carta,numPaises,pais-unidades;
+
+GUARDAR <ARCHIVO>
+
+1. Escribir archivo de texto
+2. Guardar en vector ordenado simbolos con su frecuencia: letra-frecuencia y eliminar archivo de texto
+3. Armar arbol con el vector de frecuencias
+4. Guardar info de archivo en string
+5. recorrer string y codificar cada simbolo con el arbol: escribir la codificacion en vector
+6. escribir archivo codificado: primera linea es vector de frecuencias, segunda linea es el codigo
+
+
+INICIALIZAR <ARCHIVO>
+1. Abrir archivo
+2. leer primera linea: vector de frecuencias
+3. leer segunda linea y guardarla en vector
+4. armar arbol
+5. recorrer arbol con el vector y escribir el simbolo en string
+6. leer el string e inicializar el juego
+
+-----------------------------------------------------------------------------------------------------------------
+
+TAD Simbolo
+Datos
+- simbolo: string
+- frecuencia: int
+
+Operaciones
+
+-----------------------------------------------------------------------------------------------------------------
+
+TAD NodoHUFF
+Datos
+
+Operaciones
+
+-----------------------------------------------------------------------------------------------------------------
+
+TAD ArbolHUFF
+Datos
+
+Operaciones
+
+-----------------------------------------------------------------------------------------------------------------
+
+TAD Persistencia
+Datos
+- simbolos: vector de Simbolo
+- arbol: arbolHuffman
+- codigo: vector de int
+- decodificacion: string
+
+Operaciones
++ escribirArchivo(): escribe partida en txt **usaado tmb en guardar normal
++ setSimbolos(): lee archivo txt y crea vector de simbolos -> letra y su frecuencia
++ setArbol(): crea arbol con el vector de simbolos
++ setDecodificacion(): lee archivo txt y guarda todo en un string **usaado tmb en guardar normal
++ codificar(): recorre string de la info, para cada simbolo recorre el arbol, lo codifica y va llenando vector de codigo
++ guardar(): escribe en archivo bin : n c1 f1 · · · cn fn w binary_code
++ cargarArchivo(): lee archivo bin, crea vector de simbolos, creea vector del codigo
++ decodificar(): recorre vector del codigo, para cada recorre el arbol, encuentra el simbolo y lo guarda en decodificacion
++ recuperarPartida(): recorre string decodificación y va asignando los datos a la partida **usaado tmb en guardar normal
+
+-----------------------------------------------------------------------------------------------------------------
+
+g++ -std=c++11 -o testr Jugador.cxx Carta.cxx Pais.cxx Continente.cxx Partida.cxx Main.cpp NodoHUFF.cxx ArbolHUFF.cxx Simbolo.cxx Persistencia.cxx

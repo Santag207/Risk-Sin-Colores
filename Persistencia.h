@@ -22,13 +22,16 @@ public:
     ArbolHUFF getArbol();
     //setters
     void aggSimbolo(std::pair<int8_t, int64_t> simboloNuevo);
-    void setSimbolos(std::string info);
     void aggCodigo(int64_t codigoNuevo);
     void aggInfo(std::string caracterNuevo);
+    void setInfo(Partida& partida);
     void setArbol(ArbolHUFF arbol);
+    void setSimbolos();
     //operaciones
     void escribirArchivoTxt(std::string nameFile, Partida& partida);
+    void escribirArchivoBinario(std::string nameFile, Partida& partida);
     bool leerArchivoTxt(std::string nameFile);
+    bool leerArchivoBin(std::string nameFile);
     void crearArbol();
     void recuperarPartidaConTxt(std::string nameFile, Partida& partida);
 

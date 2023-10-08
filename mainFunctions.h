@@ -7,6 +7,8 @@
 #include "Carta.h"
 #include "Jugador.h"
 #include "Continente.h"
+#include "Partida.h"
+
 using namespace std;
 
 bool tiene_espacio(string comando, string cd[]) {
@@ -112,7 +114,7 @@ bool turnoCorrecto(std::vector<Jugador> jugadores, int idJ, int * numTurno){
     if(jugadores[*numTurno].getId() == idJ){
         return true;
     }
-return false;
+    return false;
 }
 
 bool turnonumerico(std::string turno){
@@ -178,12 +180,9 @@ void ganadorR(){
 }
 
 void mostrarTablero(){
-    std::cout << "\033[1;34m"; // Azul claro brillante
     std::cout << "\n****************************************" << std::endl;
     std::cout << "*   TERRITORIOS DEL TABLERO DE JUEGO   *" << std::endl;
     std::cout << "****************************************" << std::endl;
-    // Restaura el color del texto a su valor predeterminado
-    std::cout << "\033[0m";
 
     cout<<endl<<endl;
     cout<<"+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+"<<endl;
@@ -208,4 +207,14 @@ void mostrarTablero(){
     cout<<"|                     /.                                             '  |"<<endl;
     cout<<"+                                                                       +"<<endl;
     cout<<"+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+"<<endl;
+}
+
+bool verificarArchivo(std::string nameFile, std::string extension){
+    if(nameFile.length() > extension.length() &&
+       nameFile.compare(nameFile.length() - extension.length(),
+                        extension.length(),
+                        extension) == 0){
+        return true;
+    }
+    return false;
 }

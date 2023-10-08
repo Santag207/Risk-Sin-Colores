@@ -1,4 +1,6 @@
 #include "ArbolHUFF.h"
+#include <utility>
+#include <cstdint>
 
 //constructores
 // --------------------------------------------------------------------
@@ -34,9 +36,9 @@ void ArbolHUFF::setRaiz(NodoHUFF * raiz){
 void ArbolHUFF::insertar(std::vector<std::pair<int8_t, int64_t>> simbolos){
 
 }
-void ArbolHUFF::codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int8_t> codigo){
+void ArbolHUFF::codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int64_t> codigo){
 
 }
-void ArbolHUFF::decodificar(std::vector<int8_t> codigo, std::vector<std::pair<int8_t, int64_t>> simbolos){
+void ArbolHUFF::decodificar(std::vector<int64_t> codigo, std::vector<std::pair<int8_t, int64_t>> simbolos){
 
 }

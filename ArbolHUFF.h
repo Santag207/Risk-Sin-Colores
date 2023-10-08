@@ -3,6 +3,8 @@
 
 #include "NodoHUFF.h"
 #include <vector>
+#include <utility>
+#include <cstdint>
 
 class ArbolHUFF{
 private:
@@ -19,8 +21,8 @@ public:
     void setRaiz(NodoHUFF * raiz);
     //operaciones
     void insertar(std::vector<std::pair<int8_t, int64_t>> simbolos);
-    void codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int8_t> codigo);
-    void decodificar(std::vector<int8_t> codigo, std::vector<std::pair<int8_t, int64_t>> simbolos);
+    void codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int64_t> codigo);
+    void decodificar(std::vector<int64_t> codigo, std::vector<std::pair<int8_t, int64_t>> simbolos);
 
 };
 

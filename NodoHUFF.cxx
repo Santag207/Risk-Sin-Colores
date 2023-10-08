@@ -1,5 +1,8 @@
 #include "NodoHUFF.h"
 
+#include <utility>
+#include <cstdint>
+
 //constructores
 //--------------------------------------------------------------------
 NodoHUFF::NodoHUFF(){

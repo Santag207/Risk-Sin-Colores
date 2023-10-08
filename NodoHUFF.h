@@ -1,6 +1,8 @@
 #ifndef RISKSINCOLOR_NODOHUFF_H
 #define RISKSINCOLOR_NODOHUFF_H
 
+#include <utility>
+#include <cstdint>
 
 class NodoHUFF{
 private:

@@ -27,6 +27,7 @@ public:
     void setInfo(Partida& partida);
     void setArbol(ArbolHUFF arbol);
     void setSimbolos();
+    void ordenarSimbolos();
     //operaciones
     void escribirArchivoTxt(std::string nameFile, Partida& partida);
     void escribirArchivoBinario(std::string nameFile, Partida& partida);

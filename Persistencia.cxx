@@ -10,6 +10,9 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <algorithm>
+#include <cstdint>
+#include <utility>
 
 //constructores
 // --------------------------------------------------------------------
@@ -101,10 +104,16 @@ void Persistencia::setSimbolos() {
         (this->simbolos).push_back(par);
     }
 
-    /*
+    std::sort(this->simbolos.begin(), this->simbolos.end(), [](std::pair<int8_t, int64_t> a, std::pair<int8_t, int64_t> b) {
+        return a.second < b.second;
+    });
+
+/*
     for(itV = this->simbolos.begin() ; itV != this->simbolos.end() ; itV++){
         std::cout << "Letra: '"<< itV->first << "' - Frecuencia: " << itV->second << std::endl;
     }*/
+
+
 }
 
 //operaciones
@@ -167,21 +176,17 @@ void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida
     int64_t f;
 
     for(itV = this->simbolos.begin() ; itV != this->simbolos.end() ; itV++){
-        c = static_cast<int8_t>(itV->first);
-        f = static_cast<int64_t>(itV->second);
+        c = itV->first;
+        f = itV->second;
         std::cout << "Letra: '"<< c << "' - Frecuencia: " << f << std::endl;
     }
 
-    int64_t w = this->info.length();
+    int64_t w = static_cast<int16_t>(this->info.length());
     std::cout << "CANTIDAD DE SIMBOLOS TOTAL: " << w << std::endl;
 
-    this->arbol.insertar(this->simbolos);
-    this->arbol.codificar(this->simbolos, this->codigo);
-
-    for(int i = 0 ; i < this->codigo.size() ; i++){
-        std::cout << this->codigo[i] << std::endl;
-    }
-
+    this->arbol.armarArbol(this->simbolos);
+    std::cout << "ARBOL:" << std::endl;
+    this->arbol.nivelOrden();
 }
 
 bool Persistencia::leerArchivoTxt(std::string nameFile){

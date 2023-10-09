@@ -178,3 +178,42 @@ void ArbolHUFF::construirCodigoHuffman(NodoHUFF* nodo, std::vector<int> codigo, 
         construirCodigoHuffman(nodo->getHijoD(), codigoD, CodigoHuffman);
     }
 }
+
+void ArbolHUFF::addToDeque(std::deque< NodoHUFF * >& simbolos, NodoHUFF * nuevo){
+    std::deque< NodoHUFF * >::iterator it = simbolos.begin();
+    while(it != simbolos.end() && (*it)->getSimbolo().second <= nuevo->getSimbolo().second){
+        it++;
+    }
+    simbolos.insert(it, nuevo);
+}
+
+void ArbolHUFF::armarArbol(std::vector<std::pair<int8_t, int64_t>> simbolos) {
+
+    std::deque< NodoHUFF * > simbolosD;
+    int64_t nulo = 0;
+
+    for(std::pair<int8_t, int64_t> s : simbolos){
+        std::pair<int8_t, int64_t> p (s.first, s.second);
+        NodoHUFF * n = new NodoHUFF(p);
+        simbolosD.push_back(n);
+    }
+
+    while(simbolosD.size() > 1){
+        //sacar 2 menores
+        NodoHUFF * izq = simbolosD.front();
+        simbolosD.pop_front();
+        NodoHUFF * der = simbolosD.front();
+        simbolosD.pop_front();
+
+        //crear nodo intermedio
+        NodoHUFF * intm = new NodoHUFF(izq->getSimbolo().second + der->getSimbolo().second);
+        intm->setHijoI(izq);
+        intm->setHijoD(der);
+
+        addToDeque(simbolosD, intm);
+
+    }
+
+    this->raiz = simbolosD.front();
+}
+

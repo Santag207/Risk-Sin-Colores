@@ -91,20 +91,26 @@ void ArbolHUFF::decodificar(std::vector<int64_t> codigo, std::vector<std::pair<i
             simbolos.push_back(nodoActual->getSimbolo());
             nodoActual = raiz;
         }
+
+        // Comprobar si el código es válido
+        if (nodoActual == nullptr) {
+            // Error: código de entrada no válido
+            throw std::invalid_argument("Código de entrada no válido");
+        }
     }
 }
 
 // Función de codificación de Huffman
 void ArbolHUFF::codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int64_t>& codigo) {
-    // Crear un mapa de códigos Huffman
-    std::unordered_map<int8_t, std::vector<int>> CodigoHuffman;
+    // Crear una lista de códigos Huffman
+    std::list<std::pair<int8_t, std::vector<int>>> CodigoHuffman;
     construirCodigoHuffman(raiz, {}, CodigoHuffman);
 
     // Codificar los símbolos
     for (const auto& simbolo : simbolos) {
         int8_t caracter = simbolo.first;
         if (CodigoHuffman.find(caracter) != CodigoHuffman.end()) {
-            std::vector<int> codigoCaracter = CodigoHuffman[caracter];
+            std::vector<int> codigoCaracter = CodigoHuffman[caracter].second;
             for (int bit : codigoCaracter) {
                 codigo.push_back(bit);
             }

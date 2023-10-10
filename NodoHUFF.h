@@ -1,85 +1,32 @@
-#ifndef ARBOL_HUFF_H
-#define ARBOL_HUFF_H
+#ifndef RISKSINCOLOR_NODOHUFF_H
+#define RISKSINCOLOR_NODOHUFF_H
 
 #include <utility>
 #include <cstdint>
-#include <vector>
-#include <unordered_map>
-#include <string>
-#include <algorithm>
-#include <unordered_map>
+#include <stack>
 
-class NodoHUFF {
-public:
-    NodoHUFF() {
-        this->simbolo = std::make_pair(-1, 0);
-        this->hijoI = nullptr;
-        this->hijoD = nullptr;
-    }
-
-    NodoHUFF(std::pair<int8_t, int64_t> simbolo) {
-        this->simbolo = simbolo;
-        this->hijoI = nullptr;
-        this->hijoD = nullptr;
-    }
-
-    std::pair<int8_t, int64_t> getSimbolo() const {
-        return this->simbolo;
-    }
-
-    void setSimbolo(std::pair<int8_t, int64_t> simbolo) {
-        this->simbolo = simbolo;
-    }
-
-    NodoHUFF* getHijoI() const {
-        return this->hijoI;
-    }
-
-    void setHijoI(NodoHUFF* hijoI) {
-        this->hijoI = hijoI;
-    }
-
-    NodoHUFF* getHijoD() const {
-        return this->hijoD;
-    }
-
-    void setHijoD(NodoHUFF* hijoD) {
-        this->hijoD = hijoD;
-    }
-
-    int64_t getFrecuencia() const {
-        return this->frecuencia;
-    }
-
-    void setFrecuencia(int64_t frecuencia) {
-        this->frecuencia = frecuencia;
-    }
-
+class NodoHUFF{
 private:
     std::pair<int8_t, int64_t> simbolo;
-    NodoHUFF* hijoI;
-    NodoHUFF* hijoD;
-    int64_t frecuencia;
-};
-
-class ArbolHUFF {
+    NodoHUFF * hijoI;
+    NodoHUFF * hijoD;
 public:
-    ArbolHUFF();
-    ArbolHUFF(std::pair<int8_t, int64_t>& raiz);
-    ~ArbolHUFF();
-
-    NodoHUFF* getRaiz() const;
-    void setRaiz(NodoHUFF* raiz);
-
-    void decodificar(std::vector<int64_t> codigo, std::vector<std::pair<int8_t, int64_t>>& simbolos);
-    void codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int64_t>& codigo);
-    void insertar(std::vector<std::pair<int8_t, int64_t>> simbolos);
-
-private:
-    NodoHUFF* raiz;
-
-    void construirCodigoHuffman(NodoHUFF* nodo, std::vector<int> codigo, std::unordered_map<int8_t, std::vector<int>>& CodigoHuffman);
-    NodoHUFF* buscarNodo(int8_t simbolo);
+    //constructores
+    NodoHUFF();
+    NodoHUFF(int64_t frecuencia);
+    NodoHUFF(std::pair<int8_t, int64_t> simbolo);
+    //desstructores
+    ~NodoHUFF();
+    //getters
+    std::pair<int8_t, int64_t> getSimbolo();
+    NodoHUFF * getHijoI();
+    NodoHUFF * getHijoD();
+    //setters
+    void setHijoI(NodoHUFF * hijoI);
+    void setHijoD(NodoHUFF * hijoD);
+    //operaciones
+    bool hoja();
+    bool ruta(bool raiz, std::pair<int8_t, int64_t> simbolo, std::stack<int64_t>& st, NodoHUFF * nodo, int64_t num);
 };
 
-#endif //ARBOL_HUFF_H
+#endif //RISKSINCOLOR_NODOHUFF_H

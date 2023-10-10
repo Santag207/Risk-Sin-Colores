@@ -1,12 +1,16 @@
 #include "ArbolHUFF.h"
+#include "NodoHUFF.h"
+#include <iostream>
 #include <utility>
 #include <cstdint>
 #include <vector>
+#include <deque>
+#include <stack>
 #include <unordered_map>
 #include <string>
 #include <algorithm>
+#include <queue>
 #include <unordered_map>
-
 
 //constructores
 // --------------------------------------------------------------------
@@ -22,7 +26,15 @@ ArbolHUFF::ArbolHUFF(std::pair<int8_t, int64_t>& raiz){
 // --------------------------------------------------------------------
 ArbolHUFF::~ArbolHUFF(){
     this->raiz = nullptr;
-};
+}
+void ArbolHUFF::liberarArbol(NodoHUFF * raiz){
+    if(raiz == nullptr){
+        return;
+    }
+    delete raiz;
+    liberarArbol(raiz->getHijoI());
+    liberarArbol(raiz->getHijoD());
+}
 
 //getters
 // --------------------------------------------------------------------
@@ -39,150 +51,25 @@ void ArbolHUFF::setRaiz(NodoHUFF * raiz){
 
 //operaciones
 // --------------------------------------------------------------------
-// Constructor del árbol de Huffman
-ArbolHUFF::ArbolHUFF(std::vector<std::pair<int8_t, int64_t>> simbolos) {
-    // Crear una lista de nodos
-    std::vector<NodoHUFF*> nodos;
-    for (const std::pair<int8_t, int64_t>& par : simbolos) {
-        NodoHUFF* nuevo = new NodoHUFF(par);
-        nodos.push_back(nuevo);
-    }
 
-    // Crear el árbol de Huffman
-    while (nodos.size() > 1) {
-        // Ordenar la lista de nodos por frecuencia (de menor a mayor)
-        std::sort(nodos.begin(), nodos.end(), [](NodoHUFF* a, NodoHUFF* b) {
-            return a->getSimbolo().second > b->getSimbolo().second;
-        });
-
-        // Tomar los dos nodos con las frecuencias más bajas
-        NodoHUFF* izquierdo = nodos[0];
-        NodoHUFF* derecho = nodos[1];
-
-        // Crear un nuevo nodo interno que combine los dos nodos anteriores
-        NodoHUFF* interno = new NodoHUFF(std::make_pair(-1, izquierdo->getSimbolo().second + derecho->getSimbolo().second));
-        interno->setHijoI(izquierdo);
-        interno->setHijoD(derecho);
-
-        // Eliminar los dos nodos anteriores de la lista y agregar el nuevo nodo interno
-        nodos.erase(nodos.begin(), nodos.begin() + 2);
-        nodos.push_back(interno);
-    }
-
-    // Establecer la raíz del árbol
-    this->raiz = nodos[0];
-}
-
-// Función de decodificación de Huffman
-void ArbolHUFF::decodificar(std::vector<int64_t> codigo, std::vector<std::pair<int8_t, int64_t>>& simbolos) {
-    // Iniciar el nodo actual en la raíz del árbol
-    NodoHUFF* nodoActual = raiz;
-
-    // Decodificar los bits
-    for (int64_t bit : codigo) {
-        if (bit == 0) {
-            nodoActual = nodoActual->getHijoI();
-        } else {
-            nodoActual = nodoActual->getHijoD();
+// Codificar un mensaje utilizando un árbol de Huffman
+void ArbolHUFF::codificar(std::pair<int8_t, int64_t> simbolo, std::stack<int64_t>& st, std::vector<int64_t>& codigo) {
+    if(this->raiz == nullptr){
+        return;
+    }else{
+        int64_t i = -1;
+        this->raiz->ruta(true, simbolo, st, this->raiz, i);
+        std::stack<int64_t> rutaCorrecta;
+        while(!st.empty()){
+            rutaCorrecta.push(st.top());
+            st.pop();
         }
-
-        // Si el nodo actual tiene un símbolo, agregarlo a la lista de símbolos
-        if (nodoActual->getSimbolo().first != -1) {
-            simbolos.push_back(nodoActual->getSimbolo());
-            nodoActual = raiz;
-        }
-
-        // Comprobar si el código es válido
-        if (nodoActual == nullptr) {
-            // Error: código de entrada no válido
-            throw std::invalid_argument("Código de entrada no válido");
-        }
-    }
-}
-
-// Función de codificación de Huffman
-void ArbolHUFF::codificar(std::vector<std::pair<int8_t, int64_t>> simbolos, std::vector<int64_t>& codigo) {
-    // Crear una lista de códigos Huffman
-    std::list<std::pair<int8_t, std::vector<int>>> CodigoHuffman;
-    construirCodigoHuffman(raiz, {}, CodigoHuffman);
-
-    // Codificar los símbolos
-    for (const auto& simbolo : simbolos) {
-        int8_t caracter = simbolo.first;
-        if (CodigoHuffman.find(caracter) != CodigoHuffman.end()) {
-            std::vector<int> codigoCaracter = CodigoHuffman[caracter].second;
-            for (int bit : codigoCaracter) {
-                codigo.push_back(bit);
-            }
-        }
-    }
-}
-
-// Función de inserción de nuevos datos
-void ArbolHUFF::insertar(std::vector<std::pair<int8_t, int64_t>> simbolos) {
-    // Crear una lista de nodos
-    std::vector<NodoHUFF*> nodos;
-
-    // Agregar los nuevos símbolos a la lista de nodos
-    for (const std::pair<int8_t, int64_t>& par : simbolos) {
-        NodoHUFF* nuevo = new NodoHUFF(par);
-        nodos.push_back(nuevo);
-    }
-
-    // Actualizar la frecuencia de los símbolos existentes
-    for (NodoHUFF* nodo : nodos) {
-        if (nodo->getSimbolo().first != -1) {
-            // Buscar el nodo que representa el símbolo en el árbol
-            NodoHUFF* nodoEncontrado = buscarNodo(nodo->getSimbolo().first);
-
-            // Actualizar la frecuencia del nodo encontrado
-            nodoEncontrado->setFrecuencia(nodoEncontrado->getFrecuencia() + nodo->getFrecuencia());
+        while(!rutaCorrecta.empty()){
+            codigo.push_back(rutaCorrecta.top());
+            rutaCorrecta.pop();
         }
     }
 
-    // Construir el árbol de Huffman actualizado
-    while (nodos.size() > 1) {
-        // Ordenar la lista de nodos por frecuencia (de menor a mayor)
-        std::sort(nodos.begin(), nodos.end(), [](NodoHUFF* a, NodoHUFF* b) {
-            return a->getFrecuencia() > b->getFrecuencia();
-        });
-
-        // Tomar los dos nodos con las frecuencias más bajas
-        NodoHUFF* izquierdo = nodos[0];
-        NodoHUFF* derecho = nodos[1];
-
-        // Crear un nuevo nodo interno que combine los dos nodos anteriores
-        NodoHUFF* interno = new NodoHUFF(std::make_pair(-1, izquierdo->getFrecuencia() + derecho->getFrecuencia()));
-        interno->setHijoI(izquierdo);
-        interno->setHijoD(derecho);
-
-        // Eliminar los dos nodos anteriores de la lista y agregar el nuevo nodo interno
-        nodos.erase(nodos.begin(), nodos.begin() + 2);
-        nodos.push_back(interno);
-    }
-
-    // Establecer la raíz del árbol actualizado
-    this->raiz = nodos[0];
-}
-
-// Función de construcción de códigos Huffman
-void ArbolHUFF::construirCodigoHuffman(NodoHUFF* nodo, std::vector<int> codigo, std::unordered_map<int8_t, std::vector<int>>& CodigoHuffman) {
-    // Si el nodo es una hoja, agregar el código al mapa de códigos Huffman
-    if (nodo->getSimbolo().first != -1) {
-        CodigoHuffman[nodo->getSimbolo().first] = codigo;
-    }
-
-    // Si el nodo no es una hoja, construir el código para sus hijos
-    if (nodo->getHijoI() != nullptr) {
-        std::vector<int> codigoI = codigo;
-        codigoI.push_back(0);
-        construirCodigoHuffman(nodo->getHijoI(), codigoI, CodigoHuffman);
-    }
-    if (nodo->getHijoD() != nullptr) {
-        std::vector<int> codigoD = codigo;
-        codigoD.push_back(1);
-        construirCodigoHuffman(nodo->getHijoD(), codigoD, CodigoHuffman);
-    }
 }
 
 void ArbolHUFF::addToDeque(std::deque< NodoHUFF * >& simbolos, NodoHUFF * nuevo){
@@ -217,9 +104,50 @@ void ArbolHUFF::armarArbol(std::vector<std::pair<int8_t, int64_t>> simbolos) {
         intm->setHijoD(der);
 
         addToDeque(simbolosD, intm);
-
     }
-
     this->raiz = simbolosD.front();
 }
 
+// Decodificar un mensaje utilizando un árbol de Huffman
+void ArbolHUFF::decodificar(std::vector<int64_t> codigo, std::string& info) {
+    if (raiz == nullptr || codigo.empty()) {
+        return;
+    }
+
+    NodoHUFF* nodoActual = this->raiz;
+
+    for (int64_t bit : codigo) {
+        if (bit == 0 && nodoActual->getHijoI()) {
+            nodoActual = nodoActual->getHijoI();
+        } else if (bit == 1 && nodoActual->getHijoD()) {
+            nodoActual = nodoActual->getHijoD();
+        }
+
+        if (!nodoActual->getHijoI() && !nodoActual->getHijoD()) {
+            info.push_back(static_cast<char>(nodoActual->getSimbolo().first));
+            nodoActual = this->raiz;  // Reiniciar desde la raíz
+        }
+    }
+}
+
+void ArbolHUFF::nivelOrden() {
+    std::queue < NodoHUFF * > cola;
+    NodoHUFF* nodo = this->raiz;
+
+    while(nodo != nullptr){
+        std::cout << "letra:" << nodo->getSimbolo().first << "  frecuencia: " << nodo->getSimbolo().second << std::endl;
+        if(nodo->getHijoI() != nullptr){
+            cola.push(nodo->getHijoI());
+        }
+        if(nodo->getHijoD() != nullptr){
+            cola.push(nodo->getHijoD());
+        }
+        if(!cola.empty()){
+            nodo = cola.front();
+            cola.pop();
+        }
+        else{
+            nodo = nullptr;
+        }
+    }
+}

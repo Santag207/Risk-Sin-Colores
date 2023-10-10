@@ -6,6 +6,7 @@
 #include "Continente.h"
 #include <cstring>
 #include <string>
+#include <stack>
 #include <sstream>
 #include <fstream>
 #include <vector>
@@ -49,6 +50,7 @@ void Persistencia::aggInfo(std::string caracterNuevo){
 
 void Persistencia::setInfo(Partida& partida){
     int cantPaises;
+    this->info = "";
     for(Jugador j : partida.get_jugadores()){
         //datos del jugador
         (this->info).append(std::to_string(j.getId()));
@@ -87,14 +89,21 @@ void Persistencia::setInfo(Partida& partida){
     }
 }
 
-void Persistencia::setArbol(ArbolHUFF arbol){
-    this->arbol = arbol;
+void Persistencia::setArbol(){
+    this->arbol = ArbolHUFF();
+    this->arbol.armarArbol(this->simbolos);
 }
+
+void Persistencia::borrarArbol(){
+    this->arbol.liberarArbol(this->arbol.getRaiz());
+    this->arbol.setRaiz(nullptr);
+}
+
 void Persistencia::setSimbolos() {
     std::map<int8_t, int64_t> frecuencias;
     std::vector<std::pair<int8_t, int64_t>>::iterator itV;
     std::map<int8_t, int64_t>::iterator itM;
-
+    this->simbolos.clear();
     for (char c : this->info) {
         frecuencias[c]++;
     }
@@ -107,12 +116,6 @@ void Persistencia::setSimbolos() {
     std::sort(this->simbolos.begin(), this->simbolos.end(), [](std::pair<int8_t, int64_t> a, std::pair<int8_t, int64_t> b) {
         return a.second < b.second;
     });
-
-/*
-    for(itV = this->simbolos.begin() ; itV != this->simbolos.end() ; itV++){
-        std::cout << "Letra: '"<< itV->first << "' - Frecuencia: " << itV->second << std::endl;
-    }*/
-
 
 }
 
@@ -160,33 +163,56 @@ void Persistencia::escribirArchivoTxt(std::string nameFile, Partida& partida){
 
 void Persistencia::escribirArchivoBinario(std::string nameFile, Partida& partida){
     //n c1 f1 · · · cn fn w binary_code
-    //n = 2 bytes : # caractereres diferentes en el archivo
-    //c = 1 byte : carcater
-    //f = 8 bytes : frecuencia
-    //w = 8 bytes : cantidad total de caracteres del archivo
-    //bynary_code : secuencia de 1s y 0s
-
     std::vector<std::pair<int8_t, int64_t>>::iterator itV;
     std::map<int8_t, int64_t>::iterator itM;
+    std::ofstream file(nameFile, std::ios::binary);
 
-    int16_t n = static_cast<int16_t>(this->simbolos.size());
-    std::cout << "CANTIDAD DE SIMBOLOS DIFERENTES: " << n << std::endl;
+    this->codigo.clear();
 
-    int8_t c;
-    int64_t f;
+    if(file.is_open()){
+        //n = 2 bytes : # caractereres diferentes en el archivo
+        int16_t n = static_cast<int16_t>(this->simbolos.size());
+        file.write(reinterpret_cast<char*>(&n), sizeof(n));
 
-    for(itV = this->simbolos.begin() ; itV != this->simbolos.end() ; itV++){
-        c = itV->first;
-        f = itV->second;
-        std::cout << "Letra: '"<< c << "' - Frecuencia: " << f << std::endl;
+        for(itV = this->simbolos.begin() ; itV != this->simbolos.end() ; itV++){
+            int8_t c = itV->first;
+            int64_t f = itV->second;
+            //c = 1 byte : carcater
+            file.write(reinterpret_cast<char*>(&c), sizeof(c));
+            //f = 8 bytes : frecuencia
+            file.write(reinterpret_cast<char*>(&f), sizeof(f));
+        }
+
+        this->setArbol();
+        std::stack<int64_t> st;
+        for(int i = 0 ; i < this->info.length() ; i++){
+            std::pair<int8_t, int64_t> simbolo = buscarSimbolo(this->info[i]);
+            this->arbol.codificar(simbolo, st, this->codigo);
+        }
+
+        //w = 8 bytes : cantidad total de caracteres del archivo
+        int64_t w = static_cast<int16_t>(this->codigo.size());
+        file.write(reinterpret_cast<char*>(&w), sizeof(w));
+
+        //bynary_code : secuencia de 1s y 0s
+        for(int64_t cod : this->codigo){
+            file.write(reinterpret_cast<char*>(&cod), sizeof(cod));
+        }
+
+        this->borrarArbol();
+
+    }else{
+        std::cout << "No se creo archivo binario";
     }
+    file.close();
+}
 
-    int64_t w = static_cast<int16_t>(this->info.length());
-    std::cout << "CANTIDAD DE SIMBOLOS TOTAL: " << w << std::endl;
-
-    this->arbol.armarArbol(this->simbolos);
-    std::cout << "ARBOL:" << std::endl;
-    this->arbol.nivelOrden();
+std::pair<int8_t, int64_t> Persistencia::buscarSimbolo(char letra){
+    for(std::pair<int8_t, int64_t> s : this->simbolos){
+        if(s.first == static_cast<int8_t>(letra)) {
+            return s;
+        }
+    }
 }
 
 bool Persistencia::leerArchivoTxt(std::string nameFile){
@@ -202,15 +228,51 @@ bool Persistencia::leerArchivoTxt(std::string nameFile){
     }
     return true;
 }
-void Persistencia::crearArbol(){
-
-}
 
 bool Persistencia::leerArchivoBin(std::string nameFile){
+    std::ifstream file(nameFile, std::ios::binary);
 
+    if(file.is_open()){
+        //n = 2 bytes : # caractereres diferentes en el archivo
+        int16_t n;
+        file.read(reinterpret_cast<char*>(&n), sizeof(n));
+
+        for(int i = 0 ; i < n ; i++){
+            int8_t c;
+            int64_t f;
+            //c = 1 byte : carcater
+            file.read(reinterpret_cast<char*>(&c), sizeof(c));
+            //f = 8 bytes : frecuencia
+            file.read(reinterpret_cast<char*>(&f), sizeof(f));
+            std::pair<int8_t, int64_t> simbolo (c,f);
+            this->aggSimbolo(simbolo);
+        }
+
+        //w = 8 bytes : cantidad total de caracteres del archivo
+        int64_t w;
+        w = static_cast<int16_t>(this->info.length());
+        file.read(reinterpret_cast<char*>(&w), sizeof(w));
+
+        for(int j = 0 ; j < w ; j++){
+            int64_t code;
+            file.read(reinterpret_cast<char*>(&code), sizeof(code));
+            //std::cout << code;
+            this->codigo.push_back(code);
+        }
+
+        this->setArbol();
+        this->arbol.decodificar(this->codigo, this->info);
+
+        this->borrarArbol();
+
+    }else{
+        return false;
+    }
+    file.close();
+    return true;
 }
 
-void Persistencia::recuperarPartidaConTxt(std::string nameFile, Partida& partida){
+void Persistencia::recuperarPartida(Partida& partida){
     //formato
     //ID,nombre,color,unidades,numCartas,carta,numPaises,pais-unidades;
 

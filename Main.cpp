@@ -193,10 +193,7 @@ int main() {
                     if(verificarArchivo(cd[1],extensionBin)){
                         cout << "Guardar en archivo binario '" << cd[1] << "' :recibido"<< endl;
                         cout << "Comando correcto"<< endl;
-
                         persistencia.setInfo(risk);
-                        cout << "INFO-------------------------" << endl;
-                        cout << persistencia.getInfo() << endl;
                         persistencia.setSimbolos();
                         persistencia.escribirArchivoBinario(cd[1],risk);
 
@@ -214,15 +211,26 @@ int main() {
                             risk.inicializarTablero();
                             risk.llenarContinentes();
                             risk.cargarConexiones(archivo_conexiones);
-                            persistencia.recuperarPartidaConTxt(cd[1],risk);
+                            persistencia.recuperarPartida(risk);
                             risk.mostrarInicializacion();
                             inicializado = true;
-                            persistencia.setSimbolos();
                         }else{
                             cout << "Archivo vacio o incompleto\n";
                         }
                     }else if(verificarArchivo(cd[1],extensionBin)){
                         cout << "Inicializacion del juego con archivo '" << cd[1] << "' correcta"<< endl;
+                        if(persistencia.leerArchivoBin(cd[1])){
+                            risk.cargarCartas(archivo_cartas);
+                            risk.inicializarTablero();
+                            risk.llenarContinentes();
+                            risk.cargarConexiones(archivo_conexiones);
+                            persistencia.recuperarPartida(risk);
+                            risk.mostrarInicializacion();
+                            inicializado = true;
+                        }else{
+                            cout << "Archivo vacio o incompleto\n";
+                        }
+
                     }else{
                         cout << "Extension de archivo no valida"<< endl;
                     }

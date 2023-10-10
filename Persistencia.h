@@ -5,6 +5,7 @@
 #include "Partida.h"
 #include <vector>
 #include <string>
+#include <stack>
 
 class Persistencia{
 private:
@@ -25,7 +26,8 @@ public:
     void aggCodigo(int64_t codigoNuevo);
     void aggInfo(std::string caracterNuevo);
     void setInfo(Partida& partida);
-    void setArbol(ArbolHUFF arbol);
+    void setArbol();
+    void borrarArbol();
     void setSimbolos();
     void ordenarSimbolos();
     //operaciones
@@ -33,8 +35,9 @@ public:
     void escribirArchivoBinario(std::string nameFile, Partida& partida);
     bool leerArchivoTxt(std::string nameFile);
     bool leerArchivoBin(std::string nameFile);
-    void crearArbol();
-    void recuperarPartidaConTxt(std::string nameFile, Partida& partida);
+    void recuperarPartida(Partida& partida);
+
+    std::pair<int8_t, int64_t>buscarSimbolo(char letra);
 
 };
 
